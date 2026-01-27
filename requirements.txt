@@ -4,9 +4,8 @@ uvicorn[standard]==0.24.0
 pydantic==2.5.0
 pydantic-settings==2.1.0
 
-# PaddleOCR-VL 
-paddlepaddle-gpu==3.2.1  # CUDA 12.6+, hoặc paddlepaddle cho CPU
-paddleocr[doc-parser]    # PaddleOCR-VL dependencies
+# PaddleOCR-VL Dependencies
+paddleocr[doc-parser]
 
 # Image Processing
 opencv-python==4.8.1.78
@@ -15,6 +14,7 @@ numpy>=1.26.4
 
 # LLM
 anthropic==0.25.0
+google-generativeai
 
 # Utils
 httpx==0.25.2
