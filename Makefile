@@ -1,6 +1,4 @@
-# ============================================
-# Makefile for FastAPI Docker Management
-# ============================================
+
 
 .PHONY: help build up up-gpu down logs shell test clean restart
 
@@ -104,5 +102,5 @@ stats:
 
 # GPU check
 gpu-check:
-	@echo "🎮 Checking GPU availability..."
-	docker run --rm --gpus all nvidia/cuda:12.6.0-base-ubuntu22.04 nvidia-smi || echo "❌ GPU not available"
+	@echo " Checking GPU availability..."
+	docker run --rm --gpus all nvidia/cuda:12.6.0-base-ubuntu22.04 nvidia-smi || echo " GPU not available"

@@ -97,9 +97,6 @@ services:
     networks:
       - heartify-network
 
-  # ============================================
-  # MinIO (Optional - Image Storage)
-  # ============================================
   minio:
     image: minio/minio:latest
     container_name: heartify-minio
