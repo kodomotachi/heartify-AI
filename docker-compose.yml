@@ -1,0 +1,126 @@
+version: '3.8'
+
+services:
+ 
+  fastapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: heartify-fastapi
+    ports:
+      - "8080:8080"
+    
+    environment:
+      # API Keys
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      
+      # Gemini Settings
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-1.5-flash}
+      - GEMINI_TEMPERATURE=${GEMINI_TEMPERATURE:-0.2}
+      - GEMINI_MAX_TOKENS=${GEMINI_MAX_TOKENS:-1024}
+      
+      # NestJS Integration
+      - NESTJS_CALLBACK_URL=${NESTJS_CALLBACK_URL:-http://host.docker.internal:3000}
+      
+      # VL Backend Configuration
+      - VL_BACKEND=${VL_BACKEND:-native}
+      - VL_SERVER_URL=${VL_SERVER_URL}
+      - VL_API_KEY=${VL_API_KEY}
+      - VL_MAX_CONCURRENCY=${VL_MAX_CONCURRENCY:-4}
+      
+      # Model Configuration
+      - VL_MODEL_NAME=${VL_MODEL_NAME:-PaddleOCR-VL-0.9B}
+      - VL_MODEL_DIR=${VL_MODEL_DIR}
+      
+      # VL Inference Settings
+      - VL_TEMPERATURE=${VL_TEMPERATURE:-0.0}
+      - VL_TOP_P=${VL_TOP_P:-0.9}
+      - VL_REPETITION_PENALTY=${VL_REPETITION_PENALTY:-1.1}
+      - VL_MIN_PIXELS=${VL_MIN_PIXELS:-200704}
+      - VL_MAX_PIXELS=${VL_MAX_PIXELS:-802816}
+      
+      # Document Processing
+      - USE_LAYOUT_DETECTION=${USE_LAYOUT_DETECTION:-true}
+      - USE_DOC_ORIENTATION_CLASSIFY=${USE_DOC_ORIENTATION_CLASSIFY:-false}
+      - USE_DOC_UNWARPING=${USE_DOC_UNWARPING:-false}
+      - USE_CHART_RECOGNITION=${USE_CHART_RECOGNITION:-false}
+      - FORMAT_BLOCK_CONTENT=${FORMAT_BLOCK_CONTENT:-true}
+      - USE_QUEUES=${USE_QUEUES:-true}
+      
+      # Layout Detection
+      - LAYOUT_THRESHOLD=${LAYOUT_THRESHOLD:-0.5}
+      - LAYOUT_NMS=${LAYOUT_NMS:-true}
+      - LAYOUT_UNCLIP_RATIO=${LAYOUT_UNCLIP_RATIO:-1.5}
+      - LAYOUT_MERGE_BBOXES_MODE=${LAYOUT_MERGE_BBOXES_MODE:-union}
+      
+      # Output Settings
+      - PRETTIFY_MARKDOWN=${PRETTIFY_MARKDOWN:-true}
+      - SHOW_FORMULA_NUMBER=${SHOW_FORMULA_NUMBER:-false}
+      
+      # LLM Enhancement
+      - USE_LLM_ENHANCEMENT=${USE_LLM_ENHANCEMENT:-true}
+      
+      # Performance
+      - ENABLE_BACKGROUND_PROCESSING=${ENABLE_BACKGROUND_PROCESSING:-true}
+      - CALLBACK_RETRY_MAX=${CALLBACK_RETRY_MAX:-2}
+      - MAX_IMAGE_SIZE_MB=${MAX_IMAGE_SIZE_MB:-10}
+      - TIMEOUT_SECONDS=${TIMEOUT_SECONDS:-60}
+      
+      # Device (cpu or gpu:0) - Auto-detect if not set
+      - DEVICE=${DEVICE:-cpu}
+    
+    volumes:
+      # Models cache
+      - ./models:/app/models
+      # Logs
+      - ./logs:/app/logs
+    
+    # Uncomment these lines to enable GPU
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    
+    restart: unless-stopped
+    
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    
+    networks:
+      - heartify-network
+
+  # ============================================
+  # MinIO (Optional - Image Storage)
+  # ============================================
+  minio:
+    image: minio/minio:latest
+    container_name: heartify-minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER:-minioadmin}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD:-minioadmin}
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio-data:/data
+    networks:
+      - heartify-network
+    restart: unless-stopped
+    profiles:
+      - storage  # Start only with: docker-compose --profile storage up
+
+networks:
+  heartify-network:
+    driver: bridge
+
+volumes:
+  minio-data: 
