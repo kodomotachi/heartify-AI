@@ -32,4 +32,3 @@ Thumbs.db
 
 # Models cache
 .paddleocr/
-models/
