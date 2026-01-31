@@ -32,3 +32,10 @@ Thumbs.db
 
 # Models cache
 .paddleocr/
+
+# Python virtual environments
+venv/
+.env/
+.envs/
+*venv/
+*env/

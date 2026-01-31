@@ -62,8 +62,8 @@ if __name__ == "__main__":
         
         print("\n" + "=" * 50)
         print("Test Results:")
-        print(f"  Health: {'✓ PASS' if health_ok else '✗ FAIL'}")
-        print(f"  OCR:    {'✓ PASS' if ocr_ok else '✗ FAIL'}")
+        print(f"  Health: {'PASS' if health_ok else '✗ FAIL'}")
+        print(f"  OCR:    {' PASS' if ocr_ok else '✗ FAIL'}")
         print("=" * 50)
     else:
         print("\n✗ Health check failed - skipping OCR test")

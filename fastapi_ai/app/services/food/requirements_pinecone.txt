@@ -1,0 +1,17 @@
+# Core dependencies
+pinecone-client==3.0.0
+sentence-transformers==2.3.1
+datasets==2.16.1
+pandas==2.1.4
+python-dotenv==1.0.0
+
+# Optional: for API integration
+fastapi==0.104.1
+uvicorn==0.24.0
+pydantic==2.5.0
+httpx==0.25.2
+
+# For better performance
+torch>=2.2.0
+
+transformers==4.36.2
