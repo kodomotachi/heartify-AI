@@ -615,7 +615,9 @@ def check_vector_database(
             "protein_g": metadata.get("protein_g"),
             "diet_labels": metadata.get("diet_labels"),
             "allergens": metadata.get("allergen_list"),
+            "cautions": metadata.get("cautions"),
             "nutrition_density": metadata.get("nutrition_density"),
+            "url" : metadata.get("url")
         }
         
         results.append(result)
@@ -627,7 +629,9 @@ def check_vector_database(
             f"   Protein: {result['protein_g']} g\n"
             f"   Diet: {result['diet_labels']}\n"
             f"   Allergens: {result['allergens']}\n"
+            f"   Cautions: {result['cautions']}\n" 
             f"   Density: {result['nutrition_density']}"
+            f"   URL: {result['url']}"
         )
     
     logger.info("=" * 60)

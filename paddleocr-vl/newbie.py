@@ -1,10 +1,18 @@
-from paddleocr import PaddleOCR
+import cv2
+import time
 
-ocr = PaddleOCR(use_angle_cls=True, lang='en')
+from app.services.ocr.vl_engine import vl_engine
 
-img_path = "test.png"
+img = cv2.imread("test.png")  # ảnh test của anh
 
-result = ocr.ocr(img_path)
+print("⏳ Predicting with PaddleOCR-VL...")
+start = time.time()
 
-for line in result:
-    print(line)
+result = vl_engine.predict(
+    img,
+    use_layout_detection=True,
+    use_chart_recognition=False
+)
+
+print(f"✅ Done in {time.time() - start:.2f}s")
+print(result)

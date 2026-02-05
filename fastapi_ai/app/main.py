@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api.endpoints import ocr_vl
+from  app.api.endpoints import ocr_vl
 from app.config import settings
 import logging
 

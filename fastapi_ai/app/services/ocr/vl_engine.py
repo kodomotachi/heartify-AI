@@ -60,7 +60,7 @@ class VLEngine:
             logger.error(f"Failed to initialize VL Engine: {e}")
             raise
     
-        # Thêm vào vl_engine.py trong hàm predict()
+ 
 
     def predict(self, image_input: Any, **kwargs) -> List[Dict[str, Any]]:
             """Run VL prediction"""
@@ -76,6 +76,7 @@ class VLEngine:
                 "min_pixels": settings.VL_MIN_PIXELS,
                 "max_pixels": settings.VL_MAX_PIXELS,
                 "format_block_content": settings.FORMAT_BLOCK_CONTENT,
+                # "num_workers": 0
             }
 
             try:
@@ -83,12 +84,11 @@ class VLEngine:
                     input=image_input,
                     task_type="document",      
                     use_layout_detection=True,
-                    format_block_content=True
+                    format_block_content=True, 
+                    #  use_parallel=False
                 )
 
-                # ============================================
-                # 🔍 DEBUG: In ra toàn bộ kết quả thô
-                # ============================================
+              
                 result_list = list(results)
                 logger.info(f"🔍 VL returned {len(result_list)} result(s)")
 
@@ -105,7 +105,7 @@ class VLEngine:
                         # Kiểm tra parsing_res_list
                         if res.json and 'parsing_res_list' in res.json:
                             blocks = res.json['parsing_res_list']
-                            logger.info(f"📊 Found {len(blocks)} blocks")
+                            logger.info(f" Found {len(blocks)} blocks")
                             for i, block in enumerate(blocks[:3]):  # In 3 block đầu
                                 logger.info(f"Block {i}: {block.get('block_label')} - {block.get('block_content', '')[:100]}")
 
@@ -126,12 +126,14 @@ class VLEngine:
                     })
 
                 processing_time = time.time() - start
-                logger.info(f"✅ VL Prediction: {len(output)} page(s) in {processing_time:.2f}s")
+                logger.info(f" VL Prediction: {len(output)} page(s) in {processing_time:.2f}s")
+                # logger.error(type(res.json["parsing_res_list"][0]["confidence"]))
+
 
                 return output
 
             except Exception as e:
-                logger.error(f"❌ VL prediction failed: {e}", exc_info=True)
+                logger.error(f"VL prediction failed: {e}", exc_info=True)
                 raise
 
         # Singleton instance
