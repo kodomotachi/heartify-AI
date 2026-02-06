@@ -2,7 +2,7 @@ import requests
 import json
 import time
 
-API_URL = "http://localhost:8080"
+API_URL = "http://localhost:8000"
 
 def test_health():
     print("Testing health endpoint...")
@@ -66,4 +66,4 @@ if __name__ == "__main__":
         print(f"  OCR:    {' PASS' if ocr_ok else '✗ FAIL'}")
         print("=" * 50)
     else:
-        print("\n✗ Health check failed - skipping OCR test")
+        print("\n✗ Health check failed - skipping OCR test") 

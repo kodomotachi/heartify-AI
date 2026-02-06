@@ -70,10 +70,10 @@ if __name__ == "__main__":
     query_food(
         index,
         model,
-        text="healthy breakfast",
-        filters={
-        "has_gluten": False,
-        "has_dairy": False,
-        "is_vegan": True
-    }
+        text="iron rich to eat with fish",
+    #     filters={
+    #     "has_gluten": False,
+    #     "has_dairy": False,
+    #     "is_vegan": True
+    #   }
     )

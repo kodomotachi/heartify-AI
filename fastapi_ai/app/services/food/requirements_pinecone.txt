@@ -13,5 +13,5 @@ httpx==0.25.2
 
 # For better performance
 torch>=2.2.0
-
+tqdm>=4.65.0
 transformers==4.36.2

@@ -1,10 +1,12 @@
 import os
 from pydantic_settings import BaseSettings
 from typing import Optional
+from pydantic import ConfigDict
 
 class Settings(BaseSettings):
     # ========== API Keys ==========
     ANTHROPIC_API_KEY: Optional[str] = None
+    PINECONE_API_KEY: Optional[str] = None
     
     # ========== Gemini Settings ==========
     GEMINI_API_KEY: Optional[str] = None
@@ -17,7 +19,7 @@ class Settings(BaseSettings):
     VL_SERVER_URL: Optional[str] = None
     
     # ========== VL Backend Configuration ==========
-    VL_BACKEND: str = "native"  # native | vllm-server | sglang-server | fastdeploy-server
+    VL_BACKEND: str = "native"
     VL_API_KEY: Optional[str] = None
     VL_MAX_CONCURRENCY: int = 4
     
@@ -29,8 +31,8 @@ class Settings(BaseSettings):
     VL_TEMPERATURE: float = 0.0
     VL_TOP_P: float = 0.9
     VL_REPETITION_PENALTY: float = 1.1
-    VL_MIN_PIXELS: int = 256 * 28 * 28
-    VL_MAX_PIXELS: int = 1024 * 28 * 28
+    VL_MIN_PIXELS: int = 128 * 28 * 28
+    VL_MAX_PIXELS: int = 512 * 28 * 28
     
     # ========== Document Processing ==========
     USE_LAYOUT_DETECTION: bool = True
@@ -62,10 +64,13 @@ class Settings(BaseSettings):
     TIMEOUT_SECONDS: int = 60
     
     # ========== Device ==========
-    DEVICE: str = "gpu:0"  # cpu, gpu:0 
+    DEVICE: str = "gpu:0"
     
-    class Config:
-        env_file = ".env"
-        case_sensitive = True
+    # ========== Pydantic Config ==========
+    model_config = ConfigDict(
+        env_file=".env",
+        case_sensitive=True,
+        extra="forbid"
+    )
 
 settings = Settings()

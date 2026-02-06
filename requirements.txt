@@ -10,7 +10,7 @@ paddleocr[doc-parser]
 # Image Processing
 opencv-python==4.8.1.78
 Pillow==10.1.0
-numpy>=1.26.4
+numpy ==1.26.4
 
 # LLM
 anthropic==0.25.0
