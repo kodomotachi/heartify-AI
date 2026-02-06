@@ -2,7 +2,7 @@
 Fitness Exercise Recommendation System - Enhanced Pipeline
 ==============================================================
 
-UPDATED VERSION with Intensity Classification
+UPDATED VERSION with Intensity Classification + GIF URLs
 
 This pipeline builds a vector database for semantic exercise search
 with health-aware filtering capabilities AND intensity scoring.
@@ -11,6 +11,7 @@ NEW FEATURES:
 - Automatic intensity classification (1-5 scale)
 - Confidence scoring for classifications
 - Safe intensity filtering based on user condition
+- GIF URL storage for visual demonstrations
 """
 
 import pandas as pd
@@ -24,16 +25,17 @@ from tqdm import tqdm
 from intensity_classifier import IntensityClassifier, classify_dataset
 from sentence_transformers import SentenceTransformer
 import logging 
-from dotenv import load_dotenv\
+from dotenv import load_dotenv
+
 # Setup logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
-# =============================================================================
+
 # CONFIGURATION
-# =============================================================================
+
 load_dotenv()
 
 PINECONE_CONFIG = {
@@ -47,7 +49,7 @@ PINECONE_CONFIG = {
 
 
 QUALITY_COLUMNS = {
-    "core_fields": ["name", "bodyPart", "target", "equipment"],
+    "core_fields": ["name", "bodyPart", "target", "equipment", "gifUrl"],  
     "secondary_muscles": ["secondaryMuscles/0", "secondaryMuscles/1"],
     "instructions": [f"instructions/{i}" for i in range(6)]
 }
@@ -78,9 +80,14 @@ def load_and_clean_dataset(filepath: str) -> pd.DataFrame:
     
     df_clean = df[all_columns].copy()
     
-    # Remove exercises missing critical fields
-    df_clean = df_clean.dropna(subset=QUALITY_COLUMNS["core_fields"])
+    # Remove exercises missing critical fields 
+    core_required = [col for col in QUALITY_COLUMNS["core_fields"] if col != "gifUrl"]
+    df_clean = df_clean.dropna(subset=core_required)
     print(f"{len(df_clean)} exercises with complete core fields")
+    
+    # Fill missing gifUrl with empty string
+    if 'gifUrl' in df_clean.columns:
+        df_clean['gifUrl'] = df_clean['gifUrl'].fillna('')
     
     # ADD INTENSITY CLASSIFICATION
     print("\nClassifying exercise intensity...")
@@ -89,9 +96,7 @@ def load_and_clean_dataset(filepath: str) -> pd.DataFrame:
     return df_clean
 
 
-# =============================================================================
-# TEXT EMBEDDING PREPARATION (Same as before)
-# =============================================================================
+# TEXT EMBEDDING PREPARATION 
 
 def merge_instructions(row: pd.Series) -> str:
     """Merge instruction steps."""
@@ -117,12 +122,13 @@ def build_embedding_text(row: pd.Series) -> str:
     """
     Create rich semantic text for embedding.
     
-    UPDATED: Now includes intensity information in the embedding
+    UPDATED: Now includes intensity information and visual demonstration note
     to improve semantic matching for energy-level queries.
     """
     instructions = merge_instructions(row)
     secondary = merge_secondary_muscles(row)
     intensity = row.get('intensity_label', 'MODERATE')
+    has_visual = "Yes" if row.get('gifUrl', '') else "No"
     
     text = f"""Exercise: {row['name']}
 
@@ -130,6 +136,7 @@ Target Muscle: {row['target']}
 Body Part: {row['bodyPart']}
 Equipment Needed: {row['equipment']}
 Intensity Level: {intensity}
+Visual Demonstration Available: {has_visual}
 Secondary Muscles: {secondary}
 
 How to Perform:
@@ -145,7 +152,10 @@ def prepare_embedding_data(df: pd.DataFrame) -> pd.DataFrame:
     df['embedding_text'] = df.apply(build_embedding_text, axis=1)
     df['secondary_muscles_merged'] = df.apply(merge_secondary_muscles, axis=1)
     
+    # Count exercises with GIF URLs
+    gif_count = df['gifUrl'].astype(bool).sum()
     print(f"Created {len(df)} embedding texts")
+    print(f"Exercises with GIF URLs: {gif_count} ({gif_count/len(df)*100:.1f}%)")
     
     return df
 
@@ -220,14 +230,14 @@ def create_or_get_index(pc: Pinecone) -> Any:
 
 
 # =============================================================================
-# METADATA PREPARATION (Updated with Intensity)
+# METADATA PREPARATION (Updated with GIF URL)
 # =============================================================================
 
 def build_metadata(row: pd.Series) -> Dict[str, Any]:
     """
     Build metadata for Pinecone filtering.
     
-    UPDATED: Now includes intensity information for filtering.
+    UPDATED: Now includes gifUrl for visual demonstrations.
     """
     metadata = {
         # Core identification
@@ -239,10 +249,14 @@ def build_metadata(row: pd.Series) -> Dict[str, Any]:
         "equipment": row['equipment'].lower(),
         "secondary_muscles": row['secondary_muscles_merged'].lower(),
         
-        # NEW: Intensity fields
+        # Intensity fields
         "intensity_score": int(row['intensity_score']),
         "intensity_label": row['intensity_label'],
         "intensity_confidence": row['intensity_confidence'],
+        
+ 
+        "gif_url": row.get('gifUrl', ''),
+        "has_visual": bool(row.get('gifUrl', '')),
         
         # Derived fields
         "has_equipment": row['equipment'].lower() != 'body weight',
@@ -297,7 +311,7 @@ def run_pipeline(dataset_path: str):
     Execute the complete Pinecone ingestion pipeline with intensity classification.
     """
     print("=" * 70)
-    print("FITNESS EXERCISE RECOMMENDATION PIPELINE (Enhanced)")
+    print("FITNESS EXERCISE RECOMMENDATION PIPELINE ")
     print("=" * 70)
     
     # Load and classify
@@ -328,8 +342,8 @@ def run_pipeline(dataset_path: str):
     print("=" * 70)
     print(f"Index: {PINECONE_CONFIG['index_name']}")
     print(f"Vectors: {len(df)}")
-    print("Features: Semantic search + Intensity filtering")
-    print("Ready for health-aware recommendations!")
+    print("Features: Semantic search + Intensity filtering ")
+    print("Ready for health-aware recommendations with visual guides!")
     
     return index
 

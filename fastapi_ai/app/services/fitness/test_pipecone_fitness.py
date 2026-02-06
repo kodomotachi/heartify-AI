@@ -91,41 +91,46 @@ if __name__ == "__main__":
     query_exercises(
         index,
         model,
-        text="core strengthening exercises"
-    )
-
-    # ------------------------------------------------
-    # TEST 2 – BODYWEIGHT ONLY
-    # ------------------------------------------------
-    query_exercises(
-        index,
-        model,
-        text="upper body workout at home",
-        filters={
-            "equipment": {"$eq": "body weight"}
-        }
-    )
-
-    # ------------------------------------------------
-    # TEST 3 – LOW INTENSITY (TIRED USER)
-    # ------------------------------------------------
-    query_exercises(
-        index,
-        model,
-        text="gentle exercises for tired body",
-        max_intensity=2
-    )
-
-    # ------------------------------------------------
-    # TEST 4 – MULTI CONSTRAINT
-    # ------------------------------------------------
-    query_exercises(
-        index,
-        model,
-        text="back strengthening exercises",
+        text="upper body exercises that do not require leg movement",
         filters={
             "equipment": {"$eq": "body weight"},
             "body_part": {"$nin": ["upper legs", "lower legs"]}
         },
-        max_intensity=2
+        
     )
+
+    # # ------------------------------------------------
+    # # TEST 2 – BODYWEIGHT ONLY
+    # # ------------------------------------------------
+    # query_exercises(
+    #     index,
+    #     model,
+    #     text="upper body workout at home",
+    #     filters={
+    #         "equipment": {"$eq": "body weight"}
+    #     }
+    # )
+
+    # # ------------------------------------------------
+    # # TEST 3 – LOW INTENSITY (TIRED USER)
+    # # ------------------------------------------------
+    # query_exercises(
+    #     index,
+    #     model,
+    #     text="gentle exercises for tired body",
+    #     max_intensity=2
+    # )
+
+    # # ------------------------------------------------
+    # # TEST 4 – MULTI CONSTRAINT
+    # # ------------------------------------------------
+    # query_exercises(
+    #     index,
+    #     model,
+    #     text="my leg are hurt so give me an upper body workout",
+    #     # filters={
+    #     #     "equipment": {"$eq": "body weight"},
+    #     #     "body_part": {"$nin": ["upper legs", "lower legs"]}
+    #     # },
+    #     max_intensity=2
+    # )
