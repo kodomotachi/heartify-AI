@@ -41,6 +41,7 @@ heartify-AI/
 │   │   ├── ocr-metrics-validation.png
 │   │   ├── structured-nutrition.png
 │   │   └── exercise-agent.png
+│   │   └── preview/                    # Lightweight images for README
 │   └── samples/
 │       └── image1.png
 ├── notebooks/
@@ -77,7 +78,9 @@ File chính:
 
 ### OCR Flow
 
-![OCR Metrics Validation](docs/diagrams/ocr-metrics-validation.png)
+![OCR Metrics Validation](docs/diagrams/preview/ocr-metrics-validation.png)
+
+Full-size image: `docs/diagrams/ocr-metrics-validation.png`
 
 ### OCR API Contract
 
@@ -175,7 +178,9 @@ Food index đang dùng:
 
 ### Food Agent Flow
 
-![Structured Nutrition Flow](docs/diagrams/structured-nutrition.png)
+![Structured Nutrition Flow](docs/diagrams/preview/structured-nutrition.png)
+
+Full-size image: `docs/diagrams/structured-nutrition.png`
 
 Expected output cho BE:
 
@@ -212,7 +217,9 @@ Fitness index đang dùng:
 
 ### Exercise Agent Flow
 
-![Exercise Agent Flow](docs/diagrams/exercise-agent.png)
+![Exercise Agent Flow](docs/diagrams/preview/exercise-agent.png)
+
+Full-size image: `docs/diagrams/exercise-agent.png`
 
 Expected output cho BE:
 
@@ -340,4 +347,5 @@ Luồng khuyến nghị:
 - OCR validation: `docs/diagrams/ocr-metrics-validation.png`
 - Structured nutrition: `docs/diagrams/structured-nutrition.png`
 - Exercise agent: `docs/diagrams/exercise-agent.png`
+- README previews: `docs/diagrams/preview/`
 - Sample OCR image: `docs/samples/image1.png`
