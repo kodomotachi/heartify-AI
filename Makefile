@@ -62,7 +62,12 @@ shell:
 # Run tests
 test:
 	@echo "Running API tests..."
-	docker compose exec fastapi python app/api/test_api.py
+	python tests/manual/test_api.py
+
+# Run direct OCR engine smoke test
+test-ocr-direct:
+	@echo "Running direct OCR engine smoke test..."
+	python tests/manual/test_predict.py
 
 # Check health
 health:

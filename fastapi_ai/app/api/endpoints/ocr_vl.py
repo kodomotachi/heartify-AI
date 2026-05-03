@@ -5,7 +5,7 @@ from app.models.requests import OCRRequest
 from app.models.responses import OCRResponse, ProcessingStatus, HealthMetric
 from app.services.ocr.vl_engine import vl_engine
 from app.services.llm.enhancer import medical_enhancer
-from app.utils.image_untils import download_image_fast
+from app.utils.image_utils import download_image_fast
 from app.utils.callbacks import send_callback_to_nestjs
 from app.config import settings
 import logging

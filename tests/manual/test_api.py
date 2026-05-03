@@ -1,8 +1,9 @@
 import requests
 import json
 import time
+import os
 
-API_URL = "http://localhost:8000"
+API_URL = os.getenv("HEARTIFY_AI_API_URL", "http://localhost:8080")
 
 def test_health():
     print("Testing health endpoint...")
@@ -18,7 +19,7 @@ def test_ocr():
     payload = {
         "image_id": "test-001",
         "user_id": "test-user",
-       "image_url": "http://localhost:9000/image1.png"
+       "image_url": os.getenv("HEARTIFY_TEST_IMAGE_URL", "http://localhost:9000/image1.png")
     }
     
     print(f"Request: {json.dumps(payload, indent=2)}")
