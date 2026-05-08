@@ -330,22 +330,3 @@ Luồng khuyến nghị:
 4. Nếu có `callback_url` hoặc `NESTJS_CALLBACK_URL`, FastAPI gửi thêm webhook kết quả.
 5. Backend lưu `extracted_metrics`, `raw_ocr_text`, `status`, `needs_human_validation`.
 6. Nếu `status = needs_validation`, chuyển sang màn hình review thủ công.
-
-## Ghi Chú Kỹ Thuật
-
-- OCR runtime hiện load `PaddleOCRVL` khi import `vl_engine`, nên thời gian khởi động có thể lâu.
-- `paddleocr_vl_engine.py` là wrapper thử nghiệm cũ, chưa phải flow chính.
-- Food/Fitness hiện chủ yếu là pipeline và prototype, chưa expose endpoint FastAPI chính thức.
-- Khi production hóa Food/Fitness, nên thêm router riêng:
-  - `POST /api/food/recommend`
-  - `POST /api/fitness/recommend`
-- Nên chuẩn hóa response của Food/Fitness thành Pydantic models giống OCR.
-- Các notebook đã được tách vào `notebooks/`; code runtime nên nằm trong `fastapi_ai/app`.
-
-## Hình Sơ Đồ
-
-- OCR validation: `docs/diagrams/ocr-metrics-validation.png`
-- Structured nutrition: `docs/diagrams/structured-nutrition.png`
-- Exercise agent: `docs/diagrams/exercise-agent.png`
-- README previews: `docs/diagrams/preview/`
-- Sample OCR image: `docs/samples/image1.png`
